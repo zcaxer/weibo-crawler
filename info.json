@@ -27,13 +27,13 @@
       "toolbar_menus": [
         {
           "type": "profile_follow",
-          "name": "\u5173\u6ce8",
+          "name": "\u5173\u6ce8关注",
           "pic": "",
           "params": { "uid": 6299499718 }
         },
         {
           "type": "link",
-          "name": "\u804a\u5929",
+          "name": "\u804a\u5929聊天",
           "pic": "http://h5.sinaimg.cn/upload/2015/06/12/2/toolbar_icon_discuss_default.png",
           "params": {
             "scheme": "sinaweibo://messagelist?uid=6299499718&nick=KellyGGW"
@@ -42,7 +42,7 @@
         },
         {
           "type": "link",
-          "name": "\u6587\u7ae0",
+          "name": "\u6587\u7ae0文章",
           "pic": "",
           "params": {
             "scheme": "sinaweibo://cardlist?containerid=2303190002_445_6299499718_WEIBO_ARTICLE_LIST_DETAIL&count=20"
@@ -61,7 +61,7 @@
           "tabKey": "profile",
           "must_show": 1,
           "hidden": 0,
-          "title": "\u4e3b\u9875",
+          "title": "\u4e3b\u9875主页",
           "tab_type": "profile",
           "containerid": "2302836299499718"
         },
@@ -70,7 +70,7 @@
           "tabKey": "weibo",
           "must_show": 1,
           "hidden": 0,
-          "title": "\u5fae\u535a",
+          "title": "\u5fae\u535a微博",
           "tab_type": "weibo",
           "containerid": "1076036299499718",
           "apipath": "/profile/statuses",
@@ -81,7 +81,7 @@
           "tabKey": "original_video",
           "must_show": 0,
           "hidden": 0,
-          "title": "\u89c6\u9891",
+          "title": "\u89c6\u9891视频",
           "tab_type": "video",
           "containerid": "2315676299499718"
         },
@@ -90,7 +90,7 @@
           "tabKey": "album",
           "must_show": 0,
           "hidden": 0,
-          "title": "\u76f8\u518c",
+          "title": "\u76f8\u518c相册",
           "tab_type": "album",
           "containerid": "1078036299499718"
         }
