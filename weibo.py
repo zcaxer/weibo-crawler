@@ -5,26 +5,30 @@ import webbrowser
 from time import sleep
 import math
 import random
+from tqdm import tqdm
+from enum import Enum
 
-follower = '231051_-_fans_-_%d'
-following = '231051_-_followers_-_%d'
+
+class containerid(Enum):
+    follower = '231051_-_fans_-_%d'
+    following = '100505%d_-_FOLLOWERS'
+    info = '230283%d_-_INFO'
+    like = '230869%d_-_mix'
+
 
 
 def get_weibo_api(type, uid, since_id, save=0):
-    url_base_follower = 'https://m.weibo.cn/api/container/getIndex'
-    url_base_following = 'https://m.weibo.cn/api/container/getSecond'
-    url_base_info=''
-    param = {}
+    url_getIndex = 'https://m.weibo.cn/api/container/getIndex'
+    url_getSecond = 'https://m.weibo.cn/api/container/getSecond'
+    param = {'containerid':type%uid}
     url_base = ''
-    if type == follower:
+    if type == containerid.follower:
         param['since_id'] = since_id
-        param['containerid'] = type % uid
         param['type'] = 'all'
-        url_base = url_base_follower
-    elif type == following:
+        url_base = url_getIndex
+    elif type == containerid.following:
         param["page"] = since_id
-        param['containerid'] = '100505%d_-_FOLLOWERS' % uid
-        url_base = url_base_following
+        url_base = url_getSecond
     sleep(random.randint(4, 6))
     r = requests.get(url_base, param).json()
     if save != 0:
@@ -40,7 +44,7 @@ def get_follower_list(uid):
     flag = 1
     while flag != 0:
         since_id += 1
-        r = get_weibo_api(follower, uid, since_id)
+        r = get_weibo_api(containerid.follower, uid, since_id)
         try:
             cards = r['data']['cards']
         except:
@@ -72,7 +76,7 @@ def get_following_list(uid):
     flag = 1
     while flag != 0:
         page += 1
-        r = get_weibo_api(following, uid, page,)
+        r = get_weibo_api(containerid.following, uid, page,)
         try:
             cards = r['data']['cards']
         except:
@@ -94,5 +98,17 @@ def get_following_list(uid):
     return li
 
 
-j = get_following_list(6299499718)
-print(j)
+def get_info(uid):
+    json=get_weibo_api(containerid.info,uid)
+
+    
+
+
+if __name__ == "__main__":
+    li = {}
+    j = get_follower_list(2835933097)
+    for uid in tqdm(j):
+        li[uid] = (get_following_list(uid))
+    with open("following_list.json", 'w') as f:
+        json.dump(li, f)
+
