@@ -17,7 +17,7 @@ class containerid(Enum):
     like = '230869{}_-_mix'
 
 
-def get_weibo_api(type, uid, since_id, save=0):
+def get_weibo_api(type, uid, since_id=0, save=0):
     url_getIndex = 'https://m.weibo.cn/api/container/getIndex'
     url_getSecond = 'https://m.weibo.cn/api/container/getSecond'
     param = {'containerid': type.value.format(uid)}
@@ -99,14 +99,15 @@ def get_following_list(uid):
 
 
 def get_info(uid):
-    json = get_weibo_api(containerid.info, uid)
+    json = get_weibo_api(containerid.info, uid,save=1)
 
 
 if __name__ == "__main__":
     li = {}
     j = get_following_list('3318117930')
     for uid in tqdm(j):
-        print(uid)
+    #     print(uid)
     #     li[uid] = (get_following_list(uid))
     # with open("following_list.json", 'w') as f:
     #     json.dump(li, f)
+        get_info(uid)
