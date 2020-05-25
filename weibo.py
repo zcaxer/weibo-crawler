@@ -1,26 +1,26 @@
-import requests
-from bs4 import BeautifulSoup
 import json
-import webbrowser
-from time import sleep
 import math
 import random
-from tqdm import tqdm
+import webbrowser
 from enum import Enum
+from time import sleep
+
+import requests
+from bs4 import BeautifulSoup
+from tqdm import tqdm
 
 
 class containerid(Enum):
-    follower = '231051_-_fans_-_%d'
-    following = '100505%d_-_FOLLOWERS'
-    info = '230283%d_-_INFO'
-    like = '230869%d_-_mix'
-
+    follower = '231051_-_fans_-_{}'
+    following = '100505{}_-_FOLLOWERS'
+    info = '230283{}_-_INFO'
+    like = '230869{}_-_mix'
 
 
 def get_weibo_api(type, uid, since_id, save=0):
     url_getIndex = 'https://m.weibo.cn/api/container/getIndex'
     url_getSecond = 'https://m.weibo.cn/api/container/getSecond'
-    param = {'containerid':type%uid}
+    param = {'containerid': type.value.format(uid)}
     url_base = ''
     if type == containerid.follower:
         param['since_id'] = since_id
@@ -99,16 +99,14 @@ def get_following_list(uid):
 
 
 def get_info(uid):
-    json=get_weibo_api(containerid.info,uid)
-
-    
+    json = get_weibo_api(containerid.info, uid)
 
 
 if __name__ == "__main__":
     li = {}
-    j = get_follower_list(2835933097)
+    j = get_following_list('3318117930')
     for uid in tqdm(j):
-        li[uid] = (get_following_list(uid))
-    with open("following_list.json", 'w') as f:
-        json.dump(li, f)
-
+        print(uid)
+    #     li[uid] = (get_following_list(uid))
+    # with open("following_list.json", 'w') as f:
+    #     json.dump(li, f)
