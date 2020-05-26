@@ -9,6 +9,8 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
+requests_times = 0
+
 
 class containerid(Enum):
     follower = '231051_-_fans_-_{}'
@@ -17,9 +19,9 @@ class containerid(Enum):
     like = '230869{}_-_mix'
 
 
-def get_weibo_api(type, uid, since_id, save=0):
-    url_getIndex = 'https://m.weibo.cn/api/container/getIndex'
-    url_getSecond = 'https://m.weibo.cn/api/container/getSecond'
+def get_weibo_api(type, uid, since_id=0, save=0):
+    url_getIndex = r'https://m.weibo.cn/api/container/getIndex'
+    url_getSecond = r'https://m.weibo.cn/api/container/getSecond'
     param = {'containerid': type.value.format(uid)}
     url_base = ''
     if type == containerid.follower:
@@ -29,10 +31,41 @@ def get_weibo_api(type, uid, since_id, save=0):
     elif type == containerid.following:
         param["page"] = since_id
         url_base = url_getSecond
-    sleep(random.randint(4, 6))
-    r = requests.get(url_base, param).json()
+    elif type == containerid.info:
+        url_base = url_getIndex
+
+    global requests_times
+    if requests_times > random.randint(1, 4):
+        sleep(random.randint(6, 10))
+        requests_times = 0
+    else:
+        requests_times += 1
+
+    s = requests.session()
+
+    headers = {
+        'accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
+    }
+
+    s.headers.update(headers)
+
+    cookie_jar = requests.utils.cookiejar_from_dict({
+        '_T_WM': '39162099780',
+        'SCF': 'Algm7_7NfHVZ3HUKBUI09UvlHboP5B2tavJy7d9b9R78Nj_Qo4T5VZJEv7Ypa8Vs2lx4pafVwO_I1c3l20suP_Q.',
+        'SUB': '_2A25zzvtrDeRhGeFN7FMV8SfNzD6IHXVRMIUjrDV6PUJbkdANLU2hkW1NQ_d6YH2ApgiKse1Rc0ljrtPQ2jujFEE2',
+        'SUHB': '0ElKqXzGWiexqF',
+        'SSOLoginState': '1590332218',
+        'MLOGIN': '1',
+        'XSRF-TOKEN': 'd32d06'
+    }
+    )
+    # s.cookies = cookie_jar
+
+    r = s.get(url_base, params=param, cookies=cookie_jar).json()
     if save != 0:
-        f = open("%d_%s_%d.json" % (uid, type, since_id), 'w')
+        f = open(r"json\%d_%s_%d.json" % (uid, type.value, since_id), 'w')
         json.dump(r, f)
         f.close()
     return r
@@ -99,14 +132,14 @@ def get_following_list(uid):
 
 
 def get_info(uid):
-    json = get_weibo_api(containerid.info, uid)
+    json = get_weibo_api(containerid.info, uid, 0, save=1)
 
 
 if __name__ == "__main__":
     li = {}
     j = get_following_list('3318117930')
     for uid in tqdm(j):
-        print(uid)
+        get_info(uid)
     #     li[uid] = (get_following_list(uid))
     # with open("following_list.json", 'w') as f:
     #     json.dump(li, f)

@@ -1,7 +1,7 @@
 import requests
 
 uid = 1192843505
-url = f"https://m.weibo.cn/api/container/getIndex?containerid=230283{uid}"
+url = f"https://m.weibo.cn/api/container/getIndex?containerid=230283{uid}_-_INFO"
 s = requests.session()
 
 payload = {}
