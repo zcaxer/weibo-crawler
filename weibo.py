@@ -132,7 +132,7 @@ def get_following_list(uid):
 
 
 def get_info(uid):
-    json = get_weibo_api(containerid.info, uid, 0, save=1)
+    json = get_weibo_api(containerid.info, uid, save=1)
 
 
 if __name__ == "__main__":
@@ -143,3 +143,4 @@ if __name__ == "__main__":
     #     li[uid] = (get_following_list(uid))
     # with open("following_list.json", 'w') as f:
     #     json.dump(li, f)
+        get_info(uid)
