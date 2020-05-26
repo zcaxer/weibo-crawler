@@ -26,6 +26,8 @@ cookie_jar = requests.utils.cookiejar_from_dict({
 # s.cookies = cookie_jar
 
 response = s.get(url, cookies=cookie_jar)
-
+r=response.json()
+if r['ok']:
+    print('ok')
 
 print(response.text.encode('utf8'))

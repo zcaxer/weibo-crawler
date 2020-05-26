@@ -15,6 +15,8 @@ requests_times = 0
 class containerid(Enum):
     follower = '231051_-_fans_-_{}'
     following = '100505{}_-_FOLLOWERS'
+    index = '100505{}'
+    mainpage = '230283{}'
     info = '230283{}_-_INFO'
     like = '230869{}_-_mix'
 
@@ -23,20 +25,17 @@ def get_weibo_api(type, uid, since_id=0, save=0):
     url_getIndex = r'https://m.weibo.cn/api/container/getIndex'
     url_getSecond = r'https://m.weibo.cn/api/container/getSecond'
     param = {'containerid': type.value.format(uid)}
-    url_base = ''
+    url_base = url_getIndex
     if type == containerid.follower:
         param['since_id'] = since_id
         param['type'] = 'all'
-        url_base = url_getIndex
     elif type == containerid.following:
         param["page"] = since_id
         url_base = url_getSecond
-    elif type == containerid.info:
-        url_base = url_getIndex
 
     global requests_times
-    if requests_times > random.randint(1, 4):
-        sleep(random.randint(6, 10))
+    if requests_times > random.randint(1, 3):
+        sleep(random.randint(5, 8))
         requests_times = 0
     else:
         requests_times += 1
@@ -62,13 +61,26 @@ def get_weibo_api(type, uid, since_id=0, save=0):
     }
     )
     # s.cookies = cookie_jar
-
-    r = s.get(url_base, params=param, cookies=cookie_jar).json()
-    if save != 0:
-        f = open(r"json\%d_%s_%d.json" % (uid, type.value, since_id), 'w')
-        json.dump(r, f)
-        f.close()
-    return r
+    
+    try :
+        response = s.get(url_base, params=param, cookies=cookie_jar)
+        try:
+            j=response.json()
+            if j['ok']:
+                if save != 0:
+                    f = open(r"json\%d_%s_%d.json" % (uid, type.name, since_id), 'w')
+                    json.dump(j, f)
+                    f.close()
+                return j
+            else:
+                print(f'{uid}_{type.name} json not ok')
+                return response
+        except:
+            print(f'{uid}_{type.name} json failed')
+            return response
+    except :
+        print(f'{uid}_{type.name} response  failed')
+    return None
 
 
 def get_follower_list(uid):
@@ -132,7 +144,10 @@ def get_following_list(uid):
 
 
 def get_info(uid):
-    json = get_weibo_api(containerid.info, uid, save=1)
+    get_weibo_api(containerid.mainpage, uid, save=1)
+    get_weibo_api(containerid.info, uid, save=1)
+    get_weibo_api(containerid.index, uid, save=1)
+
 
 
 if __name__ == "__main__":
