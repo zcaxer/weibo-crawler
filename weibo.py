@@ -34,8 +34,8 @@ def get_weibo_api(type, uid, since_id=0, save=0):
         url_base = url_getSecond
 
     global requests_times
-    if requests_times > random.randint(1, 3):
-        sleep(random.randint(5, 8))
+    if requests_times > 0:
+        sleep(random.randint(6, 8))
         requests_times = 0
     else:
         requests_times += 1
@@ -61,14 +61,15 @@ def get_weibo_api(type, uid, since_id=0, save=0):
     }
     )
     # s.cookies = cookie_jar
-    
-    try :
+
+    try:
         response = s.get(url_base, params=param, cookies=cookie_jar)
         try:
-            j=response.json()
+            j = response.json()
             if j['ok']:
                 if save != 0:
-                    f = open(r"json\%d_%s_%d.json" % (uid, type.name, since_id), 'w')
+                    f = open(r"json\%d_%s_%d.json" %
+                             (uid, type.name, since_id), 'w')
                     json.dump(j, f)
                     f.close()
                 return j
@@ -78,7 +79,7 @@ def get_weibo_api(type, uid, since_id=0, save=0):
         except:
             print(f'{uid}_{type.name} json failed')
             return response
-    except :
+    except:
         print(f'{uid}_{type.name} response  failed')
     return None
 
@@ -147,7 +148,6 @@ def get_info(uid):
     get_weibo_api(containerid.mainpage, uid, save=1)
     get_weibo_api(containerid.info, uid, save=1)
     get_weibo_api(containerid.index, uid, save=1)
-
 
 
 if __name__ == "__main__":
