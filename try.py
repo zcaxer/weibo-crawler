@@ -1,33 +1,35 @@
-import requests
+import json
 
-uid = 1192843505
-url = f"https://m.weibo.cn/api/container/getIndex?containerid=230283{uid}_-_INFO"
-s = requests.session()
 
-payload = {}
-headers = {
-    'accept': 'application/json, text/plain, */*',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
-}
+def parse_userinfo(g, l):
 
-s.headers.update(headers)
+    # ['id', 'screen_name', 'profile_image_url', 'profile_url', 'statuses_count', 'verified', 'verified_type', 'verified_type_ext', 'verified_reason', 'close_blue_v', 'description', 'gender',
+        # 'mbtype', 'urank', 'mbrank', 'follow_me', 'following', 'followers_count', 'follow_count', 'cover_image_phone', 'avatar_t', 'cover_image_phone', 'avatar_hd', 'like', 'like_me', 'toolbar_menus']
+    if g['ok'] == 1:
+        cards = []
+        try:
+            for i in g['data']['cards']:
+                cards += i['card_group']
+            for i in cards:
+                if i not in l:
+                    l.append(i)
+        except:
+            print('error in parse userInfo')
+    return l
 
-cookie_jar = requests.utils.cookiejar_from_dict({
-    '_T_WM': '39162099780',
-    'SCF': 'Algm7_7NfHVZ3HUKBUI09UvlHboP5B2tavJy7d9b9R78Nj_Qo4T5VZJEv7Ypa8Vs2lx4pafVwO_I1c3l20suP_Q.',
-    'SUB': '_2A25zzvtrDeRhGeFN7FMV8SfNzD6IHXVRMIUjrDV6PUJbkdANLU2hkW1NQ_d6YH2ApgiKse1Rc0ljrtPQ2jujFEE2',
-    'SUHB': '0ElKqXzGWiexqF',
-    'SSOLoginState': '1590332218',
-    'MLOGIN': '1',
-    'XSRF-TOKEN': 'd32d06'
-}
-)
-# s.cookies = cookie_jar
 
-response = s.get(url, cookies=cookie_jar)
-r=response.json()
-if r['ok']:
-    print('ok')
+with open(r'ying_following_list', 'r') as f1:
+    for line in f1:
+        f_index = open(rf'json\{line.rstrip()}_info_0.json', 'r')
+        j = json.load(f_index)
+        li = parse_userinfo(j, li)
+        f_index.close()
+print(li)
 
-print(response.text.encode('utf8'))
+with open('info.json', 'r') as f:
+    try:
+        j = json.load(f)
+        if j['ok']:
+
+    except:
+        print('error')

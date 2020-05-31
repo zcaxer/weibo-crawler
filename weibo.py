@@ -15,8 +15,8 @@ requests_times = 0
 class containerid(Enum):
     follower = '231051_-_fans_-_{}'
     following = '100505{}_-_FOLLOWERS'
-    index = '100505{}'
-    mainpage = '230283{}'
+    mainpage = '100505{}'
+    profile = '230283{}'
     info = '230283{}_-_INFO'
     like = '230869{}_-_mix'
 
@@ -152,15 +152,36 @@ def get_info(uid):
     s = create_session
     get_weibo_api(containerid.mainpage, uid, s, save=1)
     get_weibo_api(containerid.info, uid, s, save=1)
-    get_weibo_api(containerid.index, uid, s, save=1)
+
+
+def parse_userinfo(g, l):
+
+    # ['id', 'screen_name', 'profile_image_url', 'profile_url', 'statuses_count', 'verified', 'verified_type', 'verified_type_ext', 'verified_reason', 'close_blue_v', 'description', 'gender',
+        # 'mbtype', 'urank', 'mbrank', 'follow_me', 'following', 'followers_count', 'follow_count', 'cover_image_phone', 'avatar_t', 'cover_image_phone', 'avatar_hd', 'like', 'like_me', 'toolbar_menus']
+    if g['ok'] == 1:
+        try:
+            info_dic = g['data']['userInfo']
+            for i in info_dic:
+                if i not in l:
+                    l.append(i)
+        except:
+            print('error in parse userInfo')
+    return l
 
 
 if __name__ == "__main__":
-    li = {}
-    j = get_following_list('3318117930')
-    for uid in tqdm(j):
-        get_info(uid)
-    #     li[uid] = (get_following_list(uid))
-    # with open("following_list.json", 'w') as f:
-    #     json.dump(li, f)
-        get_info(uid)
+    li = []
+    # j = get_following_list('3318117930')
+    # for uid in tqdm(j):
+    #     get_info(uid)
+    # #     li[uid] = (get_following_list(uid))
+    # # with open("following_list.json", 'w') as f:
+    # #     json.dump(li, f)
+    with open(r'ying_following_list', 'r') as f1:
+        for line in f1:
+            print(line)
+            f_index = open(rf'json\{line.rstrip()}_info_0.json', 'r')
+            j = json.load(f_index)
+            li = parse_userinfo(j, li)
+            f_index.close()
+    print(li)

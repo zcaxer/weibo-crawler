@@ -1,0 +1,90 @@
+{
+  "ok": 1,
+  "data": {
+    "cards": [
+      {
+        "card_type": 11,
+        "card_group": [
+          {
+            "card_type": 42,
+            "display_arrow": 0,
+            "desc": "账号信息"
+          },
+          {
+            "card_type": 41,
+            "item_name": "昵称",
+            "item_content": "央视新闻"
+          },
+          {
+            "item_type": "verify_blue",
+            "display_arrow": 1,
+            "actionlog": {
+              "act_code": "594",
+              "ext": "uid:7371419172|ouid:2656274875|verified_type:3|ptype:200|load_read_level:0",
+              "oid": "2302832656274875_-_INFO",
+              "fid": "2302832656274875_-_INFO",
+              "cardid": "230283_-_WEIBO_INDEX_PROFILE_VERFIED_CARD",
+              "uicode": "10000198"
+            },
+            "card_type": 41,
+            "item_content": "中央电视台新闻中心官方微博",
+            "scheme": "https://verified.biz.weibo.com/bluev/verify/mobile/index?luicode=10000011&lfid=2302832656274875_-_INFO",
+            "itemid": "2302832656274875_-_WEIBO_INDEX_PROFILE_VERFIED_CARD"
+          },
+          {
+            "card_type": 41,
+            "item_name": "简介",
+            "item_content": "“央视新闻”微博是中央电视台新闻中心官方微博，是央视重大新闻、突发事件、重点报道的首发平台。"
+          }
+        ]
+      },
+      {
+        "card_type": 11,
+        "card_group": [
+          {
+            "card_type": 42,
+            "display_arrow": 0,
+            "desc": "企业信息"
+          },
+          {
+            "card_type": 41,
+            "item_name": "所在地",
+            "item_content": "北京"
+          }
+        ]
+      },
+      {
+        "card_type": 11,
+        "is_asyn": 1,
+        "card_group": [],
+        "itemid": "2306182656274875_-_likes",
+        "async_api": "/api/container/getItem?itemid=2306182656274875_-_likes&download="
+      }
+    ],
+    "cardlistInfo": {
+      "show_style": 1,
+      "button": null,
+      "can_shared": 0,
+      "cardlist_menus": [
+        {
+          "name": "刷新",
+          "type": "button_menus_refresh"
+        },
+        {
+          "name": "返回首页",
+          "params": {
+            "scheme": "sinaweibo://gotohome"
+          },
+          "type": "gohome"
+        }
+      ],
+      "v_p": "42",
+      "cardlist_title": "",
+      "desc": "",
+      "containerid": "2302832656274875_-_INFO",
+      "page": null
+    },
+    "banners": null,
+    "scheme": "sinaweibo://cardlist?containerid=2302832656274875_-_INFO&luicode=10000011&lfid=2302832656274875_-_INFO&v_p=42"
+  }
+}
