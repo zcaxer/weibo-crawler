@@ -21,25 +21,7 @@ class containerid(Enum):
     like = '230869{}_-_mix'
 
 
-def get_weibo_api(type, uid, since_id=0, save=0):
-    url_getIndex = r'https://m.weibo.cn/api/container/getIndex'
-    url_getSecond = r'https://m.weibo.cn/api/container/getSecond'
-    param = {'containerid': type.value.format(uid)}
-    url_base = url_getIndex
-    if type == containerid.follower:
-        param['since_id'] = since_id
-        param['type'] = 'all'
-    elif type == containerid.following:
-        param["page"] = since_id
-        url_base = url_getSecond
-
-    global requests_times
-    if requests_times > 0:
-        sleep(random.randint(6, 8))
-        requests_times = 0
-    else:
-        requests_times += 1
-
+def create_session():
     s = requests.session()
 
     headers = {
@@ -60,10 +42,32 @@ def get_weibo_api(type, uid, since_id=0, save=0):
         'XSRF-TOKEN': 'd32d06'
     }
     )
-    # s.cookies = cookie_jar
+    s.cookies = cookie_jar
+    return s
 
+
+def get_weibo_api(type, uid, session, since_id=0, save=0):
+    url_getIndex = r'https://m.weibo.cn/api/container/getIndex'
+    url_getSecond = r'https://m.weibo.cn/api/container/getSecond'
+    param = {'containerid': type.value.format(uid)}
+    url_base = url_getIndex
+    if type == containerid.follower:
+        param['since_id'] = since_id
+        param['type'] = 'all'
+    elif type == containerid.following:
+        param["page"] = since_id
+        url_base = url_getSecond
+
+    global requests_times
+    if requests_times > 0:
+        sleep(random.randint(5, 7))
+        requests_times = 0
+    else:
+        requests_times += 1
+
+# TODO 判断错误类型后，重试或等待ip恢复，在出现意外错误是保留数据
     try:
-        response = s.get(url_base, params=param, cookies=cookie_jar)
+        response = session.get(url_base, params=param)
         try:
             j = response.json()
             if j['ok']:
@@ -145,9 +149,10 @@ def get_following_list(uid):
 
 
 def get_info(uid):
-    get_weibo_api(containerid.mainpage, uid, save=1)
-    get_weibo_api(containerid.info, uid, save=1)
-    get_weibo_api(containerid.index, uid, save=1)
+    s = create_session
+    get_weibo_api(containerid.mainpage, uid, s, save=1)
+    get_weibo_api(containerid.info, uid, s, save=1)
+    get_weibo_api(containerid.index, uid, s, save=1)
 
 
 if __name__ == "__main__":
