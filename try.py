@@ -26,10 +26,3 @@ with open(r'ying_following_list', 'r') as f1:
         f_index.close()
 print(li)
 
-with open('info.json', 'r') as f:
-    try:
-        j = json.load(f)
-        if j['ok']:
-
-    except:
-        print('error')
