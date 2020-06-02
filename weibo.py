@@ -83,13 +83,13 @@ def get_weibo_api(type, uid, session, since_id=0, save=0):
                     f.close()
                 return j
             else:
-                logger.warn(f'{uid}_{type.name} json not ok')
+                logger.warning(f'{uid}_{type.name} json not ok')
                 return response
         except:
-            logger.warn(f'{uid}_{type.name} json failed')
+            logger.warning(f'{uid}_{type.name} json failed')
             return response
     except:
-        logger.warn(f'{uid}_{type.name} response  failed')
+        logger.warning(f'{uid}_{type.name} response  failed')
     return None
 
 
@@ -103,7 +103,7 @@ def get_follower_list(uid):
         try:
             cards = r['data']['cards']
         except:
-            logger.warn("api error")
+            logger.warning("api error")
             break
         if len(cards) == 0:
             flag = 0
@@ -144,7 +144,7 @@ def get_following_list(uid):
             try:
                 li.append(i['user']['id'])
             except:
-                logger.warn('no id')
+                logger.warning('no id')
                 break
         logger.info('crawling  follower page: {page}')
 
@@ -170,7 +170,7 @@ def parse_userinfo(g, l):
                 if i not in l:
                     l.append(i)
         except:
-            logger.warn('error in parse userInfo')
+            logger.warning('error in parse userInfo')
     return l
 
 

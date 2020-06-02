@@ -1,5 +1,9 @@
 import json
+import logging
 
+fmt = "%(asctime)-s --%(levelname)s -- %(message)s"
+logging.basicConfig(filename='weibo.log', level=logging.INFO, format=fmt)
+logger = logging.getLogger('weibo')
 
 def parse_userinfo(g, l):
 
@@ -17,19 +21,21 @@ def parse_userinfo(g, l):
                     if name not in l:
                         l.append(name)
                     if not i.get('item_content'):
-                        print(g['data']['cardlistInfo']
+                        logger.debug(g['data']['cardlistInfo']
                               ['containerid'], 'no item_content', i['item_name'])
+                    else:
+                        pass
                 elif i.get('item_type'):
                     name = i['item_type']
                     if name not in l:
                         l.append(name)
                     if not i.get('item_content'):
-                        print(g['data']['cardlistInfo']
+                        logger.debug(g['data']['cardlistInfo']
                               ['containerid'], 'no item_content', i['item_type'])
                 elif i.get('item_content'):
                     # print(g['data']['cardlistInfo']
                     #       ['containerid'], 'no item name or type', i['item_content'])
-                    print(name, ':', i['item_content'])
+                    logger.debug(name, ':', i['item_content'])
                 elif i.get('desc'):
                     # print(g['data']['cardlistInfo']['containerid'])
                     # print(i['desc'])
@@ -49,19 +55,19 @@ def parse_userinfo(g, l):
                                     #     l.append(i.get('desc1'))
                     pass
                 else:
-                    print(g['data']['cardlistInfo']
+                    logger.debug(g['data']['cardlistInfo']
                           ['containerid'], 'not included at', i)
 
         except:
-            print('error in parse userInfo')
+            logger.warning('error in parse userInfo')
     return l
 
 
 li = []
 with open(r'ying_following_list', 'r') as f1:
     for line in f1:
-        f_index = open(rf'json\{line.rstrip()}_info_0.json', 'r')
-        j = json.load(f_index)
+        f_info = open(rf'json\{line.rstrip()}_info_0.json', 'r')
+        j = json.load(f_info)
         li = parse_userinfo(j, li)
-        f_index.close()
+        f_info.close()
 print(li)
