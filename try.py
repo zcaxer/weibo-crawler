@@ -8,21 +8,50 @@ def parse_userinfo(g, l):
     if g['ok'] == 1:
         cards = []
         try:
+            name = ''
             for i in g['data']['cards']:
                 cards += i['card_group']
             for i in cards:
                 if i.get('item_name'):
-                    if i['item_name'] not in l:
-                        l.append(i.get('item_name'))
-                    if i['desc'] not in l:
-                        l.append(i.get('desc'))
-                    if i['desc1'] not in l:
-                        l.append(i.get('desc1'))
+                    name = i['item_name']
+                    if name not in l:
+                        l.append(name)
                     if not i.get('item_content'):
-                        print(i['item_name'])
-                        print(i['item_content'])
+                        print(g['data']['cardlistInfo']
+                              ['containerid'], 'no item_content', i['item_name'])
+                elif i.get('item_type'):
+                    name = i['item_type']
+                    if name not in l:
+                        l.append(name)
+                    if not i.get('item_content'):
+                        print(g['data']['cardlistInfo']
+                              ['containerid'], 'no item_content', i['item_type'])
+                elif i.get('item_content'):
+                    # print(g['data']['cardlistInfo']
+                    #       ['containerid'], 'no item name or type', i['item_content'])
+                    print(name, ':', i['item_content'])
+                elif i.get('desc'):
+                    # print(g['data']['cardlistInfo']['containerid'])
+                    # print(i['desc'])
+                    # if i['desc'] not in l:
+                    #     l.append(i.get('desc'))
+                    pass
+                elif i.get('desc1'):
+                    # if i['desc1'] not in l:
+                    #     l.append(i.get('desc1'))
+                    pass
+                elif i.get('desc2_struct'):
+                                # if i['desc1'] not in l:
+                                #     l.append(i.get('desc1'))
+                    pass
+                elif i.get('pics'):
+                                    # if i['desc1'] not in l:
+                                    #     l.append(i.get('desc1'))
+                    pass
                 else:
-                    print(i)
+                    print(g['data']['cardlistInfo']
+                          ['containerid'], 'not included at', i)
+
         except:
             print('error in parse userInfo')
     return l

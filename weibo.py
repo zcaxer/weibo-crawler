@@ -1,4 +1,5 @@
 import json
+import logging
 import math
 import random
 import webbrowser
@@ -10,6 +11,10 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 requests_times = 0
+
+fmt = "%(asctime)-s --%(levelname)s -- %(message)s"
+logging.basicConfig(filename='weibo.log', level=logging.INFO, format=fmt)
+logger = logging.getLogger('weibo')
 
 
 class containerid(Enum):
@@ -78,13 +83,13 @@ def get_weibo_api(type, uid, session, since_id=0, save=0):
                     f.close()
                 return j
             else:
-                print(f'{uid}_{type.name} json not ok')
+                logger.warn(f'{uid}_{type.name} json not ok')
                 return response
         except:
-            print(f'{uid}_{type.name} json failed')
+            logger.warn(f'{uid}_{type.name} json failed')
             return response
     except:
-        print(f'{uid}_{type.name} response  failed')
+        logger.warn(f'{uid}_{type.name} response  failed')
     return None
 
 
@@ -98,12 +103,12 @@ def get_follower_list(uid):
         try:
             cards = r['data']['cards']
         except:
-            print("api error")
+            logger.warn("api error")
             break
         if len(cards) == 0:
             flag = 0
             break
-        print(since_id)
+        logger.info(f'crawling following_list page: {since_id}')
         for item in cards:
             try:
                 j = item['card_group']
@@ -115,7 +120,7 @@ def get_follower_list(uid):
             except:
                 flag = 0
                 break
-    print(len(li))
+    logger.info(f"crawled uid's {len(li)} following id")
     # print(r.url)
     return li
 
@@ -139,11 +144,11 @@ def get_following_list(uid):
             try:
                 li.append(i['user']['id'])
             except:
-                print('no id')
+                logger.warn('no id')
                 break
-        print(page)
+        logger.info('crawling  follower page: {page}')
 
-    print(len(li))
+    logger.info(f"crawled uid's {len(li)} follower id")
     # print(r.url)
     return li
 
@@ -165,7 +170,7 @@ def parse_userinfo(g, l):
                 if i not in l:
                     l.append(i)
         except:
-            print('error in parse userInfo')
+            logger.warn('error in parse userInfo')
     return l
 
 
@@ -179,8 +184,8 @@ if __name__ == "__main__":
     # #     json.dump(li, f)
     with open(r'ying_following_list', 'r') as f1:
         for line in f1:
-            print(line)
-            f_index = open(rf'json\{line.rstrip()}_info_0.json', 'r')
+            # logger.info(line)
+            f_index = open(rf'json\{line.rstrip()}_index_0.json', 'r')
             j = json.load(f_index)
             li = parse_userinfo(j, li)
             f_index.close()
