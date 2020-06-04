@@ -1,6 +1,7 @@
 import mysql.connector as mysql
 
-cnx=mysql.connect(user='levi',password='wsx',host='192.168.1.102',database='mysql')
+cnx = mysql.connect(user='levi', password='wsx',
+                    host='45.63.5.130', database='mysql')
 cursor=cnx.cursor()
 query=("SELECT user,host FROM user")
 

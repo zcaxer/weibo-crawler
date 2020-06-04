@@ -2,7 +2,7 @@
 import json
 import logging
 
-fmt = "%(asctime)-s --%(levelname)s -- %(message)s"
+fmt = "%(asctime)-s - %(levelname)s - %(message)s"
 logger = logging.getLogger('weibo')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler('try.log', 'w', "UTF-8")
@@ -20,52 +20,52 @@ def parse_userInfo(g, l):
             for i in g['data']['cards']:
                 cards += i['card_group']
             for i in cards:
-                if i.get('item_name'):
+                if 'item_name' in i:
                     name = i['item_name']
                     if name not in l:
                         l.append(name)
-                    if not i.get('item_content'):
-                        logger.debug("json %s's item_name :%s has no item_content", g['data']['cardlistInfo']
+                        logger.debug("%s first item_name appeares in %s", name, i)
+                    if not 'item_content' in i:
+                        logger.info("json %s's item_name :%s has no item_content", g['data']['cardlistInfo']
                         ['containerid'], i['item_name'])
-                    else:
-                        pass
-                elif i.get('item_type'):
+                elif 'item_type' in i:
                     name = i['item_type']
                     if name not in l:
                         l.append(name)
-                    if not i.get('item_content'):
-                        logger.debug("json %s's item_type :%s has no item_content", g['data']['cardlistInfo']
+                        logger.debug("%s first item_type appeares in %s", name, i)
+                    if not 'item_content' in i:
+                        logger.info()("json %s's item_type :%s has no item_content", g['data']['cardlistInfo']
                         ['containerid'], i['item_type'])
-                elif i.get('item_content'):
+                elif 'item_content' in i:
                     # print(g['data']['cardlistInfo']
                     #       ['containerid'], 'no item name or type', i['item_content'])
-                    logger.debug("json %s's item_type item_content %s has no item_name,last item_name is %s",
+                    logger.info("json %s's item_type item_content %s has no item_name,last item_name is %s",
                                  g['data']['cardlistInfo']['containerid'], i['item_content'], name)
-                elif i.get('desc'):
-                    logger.debug("json %s  has 'desc':%s",
+                elif 'desc' in i:
+                    logger.info("json %s  has 'desc':%s",
                                  g['data']['cardlistInfo']['containerid'], i['desc'])
                     # if i['desc'] not in l:
                     #     l.append(i.get('desc'))
 
-                elif i.get('desc1'):
-                    logger.debug("json %s  has 'desc1':%s",
+                elif 'desc1' in i:
+                    logger.info("json %s  has 'desc1':%s",
                                  g['data']['cardlistInfo']['containerid'], i['desc1'])
-                elif i.get('desc2_struct'):
+                elif 'desc2_struct' in i:
                     # if i['desc2_struct'] not in l:
                     #     l.append(i.get('desc2_struct'))
-                    logger.debug("json %s  has 'desc2_struct':%s",
+                    logger.info("json %s  has 'desc2_struct':%s",
                                  g['data']['cardlistInfo']['containerid'], i['desc2_struct'])
-                elif i.get('pics'):
+                elif 'pics' in i:
                     # if i['pics'] not in l:
                     #     l.append(i.get('pics'))
-                    logger.debug("json %s  has 'pics':%s",
+                    logger.info("json %s  has 'pics':%s",
                                  g['data']['cardlistInfo']['containerid'], i['pics'])
                 else:
-                    logger.debug('%s has field not included :\n %s', g['data']['cardlistInfo']
+                    logger.warning('%s has field not included :\n %s', g['data']['cardlistInfo']
                     ['containerid'], i)
 
         except:
-            logger.warning('error in parse userInfo')
+            logger.warning('error in parse %s',g['data']['cardlistInfo']['containerid'])
     return l
 
 
@@ -76,4 +76,8 @@ with open(r'ying_following_list', 'r') as f1:
         j = json.load(f_info)
         li = parse_userInfo(j, li)
         f_info.close()
+
+# f = open(r'C:\Users\zcaxe\workspace\python\weibo\json\5234367848_info_0.json','r')
+# j=json.load(f)
+# parse_userInfo(j,li)
 print(li)
