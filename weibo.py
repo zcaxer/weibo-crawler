@@ -17,10 +17,10 @@ logging.basicConfig(filename='weibo.log', level=logging.INFO, format=fmt)
 logger = logging.getLogger('weibo')
 
 
-class containerid(Enum):
+class Containerid(Enum):
     follower = '231051_-_fans_-_{}'
     following = '100505{}_-_FOLLOWERS'
-    mainpage = '100505{}'
+    main_page = '100505{}'
     profile = '230283{}'
     info = '230283{}_-_INFO'
     like = '230869{}_-_mix'
@@ -32,7 +32,8 @@ def create_session():
     headers = {
         'accept': 'application/json, text/plain, */*',
         'Accept-Encoding': 'gzip, deflate, br',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/81.0.4044.138 Safari/537.36 '
     }
 
     s.headers.update(headers)
@@ -56,10 +57,10 @@ def get_weibo_api(type, uid, session, since_id=0, save=0):
     url_getSecond = r'https://m.weibo.cn/api/container/getSecond'
     param = {'containerid': type.value.format(uid)}
     url_base = url_getIndex
-    if type == containerid.follower:
+    if type == Containerid.follower:
         param['since_id'] = since_id
         param['type'] = 'all'
-    elif type == containerid.following:
+    elif type == Containerid.following:
         param["page"] = since_id
         url_base = url_getSecond
 
@@ -70,7 +71,7 @@ def get_weibo_api(type, uid, session, since_id=0, save=0):
     else:
         requests_times += 1
 
-# TODO 判断错误类型后，重试或等待ip恢复，在出现意外错误是保留数据
+    # TODO 判断错误类型后，重试或等待ip恢复，在出现意外错误是保留数据
     try:
         response = session.get(url_base, params=param)
         try:
@@ -99,7 +100,7 @@ def get_follower_list(uid):
     flag = 1
     while flag != 0:
         since_id += 1
-        r = get_weibo_api(containerid.follower, uid, since_id)
+        r = get_weibo_api(Containerid.follower, uid, since_id)
         try:
             cards = r['data']['cards']
         except:
@@ -131,7 +132,7 @@ def get_following_list(uid):
     flag = 1
     while flag != 0:
         page += 1
-        r = get_weibo_api(containerid.following, uid, page,)
+        r = get_weibo_api(Containerid.following, uid, page, )
         try:
             cards = r['data']['cards']
         except:
@@ -155,14 +156,13 @@ def get_following_list(uid):
 
 def get_info(uid):
     s = create_session
-    get_weibo_api(containerid.mainpage, uid, s, save=1)
-    get_weibo_api(containerid.info, uid, s, save=1)
+    get_weibo_api(Containerid.main_page, uid, s, save=1)
+    get_weibo_api(Containerid.info, uid, s, save=1)
 
 
 def parse_userinfo(g, l):
-
     # ['id', 'screen_name', 'profile_image_url', 'profile_url', 'statuses_count', 'verified', 'verified_type', 'verified_type_ext', 'verified_reason', 'close_blue_v', 'description', 'gender',
-        # 'mbtype', 'urank', 'mbrank', 'follow_me', 'following', 'followers_count', 'follow_count', 'cover_image_phone', 'avatar_t', 'cover_image_phone', 'avatar_hd', 'like', 'like_me', 'toolbar_menus']
+    # 'mbtype', 'urank', 'mbrank', 'follow_me', 'following', 'followers_count', 'follow_count', 'cover_image_phone', 'avatar_t', 'cover_image_phone', 'avatar_hd', 'like', 'like_me', 'toolbar_menus']
     if g['ok'] == 1:
         try:
             info_dic = g['data']['userInfo']
