@@ -28,6 +28,8 @@ def parse_userInfo(g, l):
                     if not 'item_content' in i:
                         logger.info("json %s's item_name :%s has no item_content", g['data']['cardlistInfo']
                         ['containerid'], i['item_name'])
+
+            
                 elif 'item_type' in i:
                     name = i['item_type']
                     if name not in l:
@@ -37,32 +39,29 @@ def parse_userInfo(g, l):
                         logger.info()("json %s's item_type :%s has no item_content", g['data']['cardlistInfo']
                         ['containerid'], i['item_type'])
                 elif 'item_content' in i:
-                    # print(g['data']['cardlistInfo']
-                    #       ['containerid'], 'no item name or type', i['item_content'])
                     logger.info("json %s's item_type item_content %s has no item_name,last item_name is %s",
                                  g['data']['cardlistInfo']['containerid'], i['item_content'], name)
                 elif 'desc' in i:
-                    logger.info("json %s  has 'desc':%s",
+                    logger.debug("json %s  has 'desc':%s",
                                  g['data']['cardlistInfo']['containerid'], i['desc'])
-                    # if i['desc'] not in l:
-                    #     l.append(i.get('desc'))
-
+                    #信息分类名和一些友链名
                 elif 'desc1' in i:
                     logger.info("json %s  has 'desc1':%s",
                                  g['data']['cardlistInfo']['containerid'], i['desc1'])
+                    #签到信息和推荐的同类账号名
                 elif 'desc2_struct' in i:
-                    # if i['desc2_struct'] not in l:
-                    #     l.append(i.get('desc2_struct'))
+
                     logger.info("json %s  has 'desc2_struct':%s",
                                  g['data']['cardlistInfo']['containerid'], i['desc2_struct'])
+                    #未出现，应当是签到信息
                 elif 'pics' in i:
-                    # if i['pics'] not in l:
-                    #     l.append(i.get('pics'))
                     logger.info("json %s  has 'pics':%s",
                                  g['data']['cardlistInfo']['containerid'], i['pics'])
+                    #推荐的账号
                 else:
                     logger.warning('%s has field not included :\n %s', g['data']['cardlistInfo']
                     ['containerid'], i)
+                    #其他未处理的信息
 
         except:
             logger.warning('error in parse %s',g['data']['cardlistInfo']['containerid'])
